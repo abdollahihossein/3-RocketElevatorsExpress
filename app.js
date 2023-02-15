@@ -1,7 +1,9 @@
 const express = require('express')
 const app = express()
+const fs = require('fs');
 require('dotenv').config()
 const port = process.env.PORT || 3000
+
 
 // hello
 app.get('/hello', (req,res) => {
@@ -17,11 +19,28 @@ app.get('/status', (req,res) => {
 // error
 app.get('/error', (req, res) => {
   const error = new Error("Error Message")
-  error.status = 403
+  error.status = 404
   res.status(error.status).send(`Something goes wrong! - Error code: ${error.status}`)
 })
 
 // email-list
+app.get('/email-list', (req, res) => {
+  let emaillist =[]
+  let agents
+  let j
+  fs.readFile('agents.json', (err, data) => {
+    if (err) throw err
+    agents = JSON.parse(data)
+    j = 0
+    agents.forEach(element => {
+      emaillist[j] = agents[j].email
+      j++
+    });
+    res.send(JSON.stringify(emaillist))
+  })
+})
+
+
 
 
 
